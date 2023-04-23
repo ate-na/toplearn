@@ -9,11 +9,16 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useRef } from "react";
 
-const Login = () => {
+const Login = (props) => {
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+
   const submitFormHandler = (data) => {
-    data.prevantDefault();
+    data.preventDefault();
     console.log("data", data);
+    props.loginHandler(emailRef.current.value,passwordRef.current.value)
   };
 
   return (
@@ -46,15 +51,19 @@ const Login = () => {
             name="email"
             autoComplete="email"
             autoFocus
+            type="email"
+            inputRef={emailRef}
           />
           <TextField
             required
             margin="normal"
             id="password"
+            type="password"
             label="password Address"
             name="password"
             autoComplete="current-password"
             autoFocus
+            inputRef={passwordRef}
           />
           <FormControlLabel
             control={<Checkbox value="remember" />}

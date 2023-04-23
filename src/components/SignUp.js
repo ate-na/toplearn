@@ -56,6 +56,7 @@ const SignUp = (props) => {
             name="email"
             autoComplete="email"
             autoFocus
+            type="email"
             inputRef={emailRef}
           />
           <TextField
@@ -77,6 +78,7 @@ const SignUp = (props) => {
             name="password"
             autoComplete="current-password"
             autoFocus
+            type="password"
             inputRef={passwordRef}
           />
           <FormControlLabel

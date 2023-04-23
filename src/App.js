@@ -25,8 +25,21 @@ function App() {
     }
   };
 
-  const loginHandler = (email, password) => {
+  const loginHandler = async (email, password) => {
     console.log("data", email, password);
+    let response;
+    try {
+      response = await fetch("http://localhost:3001/api/v1/auth/signin", {
+        body: JSON.stringify({ email, password }),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("response", response);
+    } catch (error) {
+      console.log("error", error);
+    }
   };
   return (
     <>
