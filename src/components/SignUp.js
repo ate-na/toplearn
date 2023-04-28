@@ -6,24 +6,22 @@ import {
   FormControlLabel,
   TextField,
   Typography,
+  Link,
 } from "@mui/material";
-import { useRef } from "react";
-import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Link as RLink } from "react-router-dom";
 
 const SignUp = (props) => {
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
-  const usernameRef = useRef(null);
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+    reset,
+  } = useForm({ mode: "all" });
 
   const submitFormHandler = (event) => {
-    event.preventDefault();
-    console.log(emailRef.current.value);
-    props.SignUpSubmitHandler(
-      emailRef.current.value,
-      usernameRef.current.value,
-      passwordRef.current.value
-    );
-
+    props.SignUpSubmitHandler(event.email, event.username, event.password);
+    reset();
   };
 
   return (
@@ -46,7 +44,7 @@ const SignUp = (props) => {
             flexDirection: "column",
             justifyContent: "center",
           }}
-          onSubmit={submitFormHandler}
+          onSubmit={handleSubmit(submitFormHandler)}
         >
           <TextField
             required
@@ -55,9 +53,15 @@ const SignUp = (props) => {
             label="email"
             name="email"
             autoComplete="email"
-            autoFocus
             type="email"
-            inputRef={emailRef}
+            error={errors.email ? true : false}
+            helperText={errors.email ? errors.email.message : undefined}
+            {...register("email", {
+              required: {
+                value: true,
+                message: "Email is Required",
+              },
+            })}
           />
           <TextField
             required
@@ -65,9 +69,12 @@ const SignUp = (props) => {
             id="username"
             label="username"
             name="username"
-            autoComplete="username"
-            autoFocus
-            inputRef={usernameRef}
+            placeholder="username"
+            error={errors.username ? true : false}
+            helperText={errors.username ? errors.username.message : undefined}
+            {...register("username", {
+              required: { value: true, message: "Username is Required" },
+            })}
           />
 
           <TextField
@@ -78,8 +85,19 @@ const SignUp = (props) => {
             name="password"
             autoComplete="current-password"
             autoFocus
+            error={errors.password ? true : false}
+            helperText={errors.password ? errors.password.message : undefined}
             type="password"
-            inputRef={passwordRef}
+            {...register("password", {
+              required: {
+                value: true,
+                message: "Password is Required",
+              },
+              minLength: {
+                value: 6,
+                message: "Password is Requird",
+              },
+            })}
           />
           <FormControlLabel
             control={<Checkbox value="remember" />}
@@ -88,7 +106,7 @@ const SignUp = (props) => {
           <Button variant="contained" type="submit">
             Sign Up
           </Button>
-          <Link href="/sign-in" variant="body2">
+          <Link component={RLink} to="/sign-in" variant="body2">
             {"have an account? Sign In"}
           </Link>
         </Box>

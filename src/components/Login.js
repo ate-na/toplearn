@@ -9,16 +9,21 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useRef } from "react";
+import { Link as MLink } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 const Login = (props) => {
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({ mode: "all" });
 
   const submitFormHandler = (data) => {
-    data.preventDefault();
     console.log("data", data);
-    props.loginHandler(emailRef.current.value,passwordRef.current.value)
+    props.loginHandler(data.email, data.password);
+    reset();
   };
 
   return (
@@ -41,7 +46,7 @@ const Login = (props) => {
             flexDirection: "column",
             justifyContent: "center",
           }}
-          onSubmit={submitFormHandler}
+          onSubmit={handleSubmit(submitFormHandler)}
         >
           <TextField
             required
@@ -49,22 +54,40 @@ const Login = (props) => {
             id="email"
             label="Email Address"
             name="email"
-            autoComplete="email"
-            autoFocus
+            error={errors.email ? true : false}
+            helperText={errors?.email?.message || undefined}
             type="email"
-            inputRef={emailRef}
+            {...register("email", {
+              required: {
+                value: true,
+                message: "Email is required",
+              },
+              pattern: {
+                value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
+                message: "Email is not valid.",
+              },
+            })}
           />
           <TextField
-            required
             margin="normal"
             id="password"
             type="password"
             label="password Address"
             name="password"
-            autoComplete="current-password"
-            autoFocus
-            inputRef={passwordRef}
+            error={errors.password ? true : false}
+            helperText={errors?.password?.message || undefined}
+            {...register("password", {
+              required: {
+                value: true,
+                message: "password is required",
+              },
+              minLength: {
+                value: 6,
+                message: "password is not valid.",
+              },
+            })}
           />
+          {console.log(errors)}
           <FormControlLabel
             control={<Checkbox value="remember" />}
             label="remember me"
@@ -77,7 +100,7 @@ const Login = (props) => {
               <Link variant="body2">Forgot Password?</Link>
             </Grid>
             <Grid item>
-              <Link href="/sign-up" variant="body2">
+              <Link component={MLink} to="/sign-up" variant="body2">
                 {" "}
                 {"Don't have an account? Sign Up"}
               </Link>

@@ -33,6 +33,7 @@ function App() {
         body: JSON.stringify({ email, password }),
         method: "POST",
         headers: {
+          "access-control-allow-origin": "*",
           "Content-Type": "application/json",
         },
       });
